@@ -5,28 +5,22 @@ export async function GET() {
     const apiKey = process.env.CRICKET_API_KEY;
 
     if (!apiKey) {
-      return NextResponse.json(
-        { error: "API key not configured" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "API key not configured" }, { status: 500 });
     }
 
     const response = await fetch(
       `https://api.cricapi.com/v1/currentMatches?apikey=${apiKey}&offset=0`,
-      { next: { revalidate: 30 } }
+      { next: { revalidate: 300 } } // Cache for 5 MINUTES — saves 90% of API calls
     );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch matches");
-    }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: {
+        "Cache-Control": "s-maxage=300, stale-while-revalidate=600"
+      }
+    });
 
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch cricket data" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }
