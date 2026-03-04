@@ -4,9 +4,8 @@ import AutoRefresh from "./components/AutoRefresh";
 
 async function getLiveMatches() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://cricscore-xi.vercel.app";
     const response = await fetch(
-      `${baseUrl}/api/matches`,
+      `https://api.cricapi.com/v1/currentMatches?apikey=${process.env.CRICKET_API_KEY}&offset=0`,
       { cache: "no-store" }
     );
     const data = await response.json();
