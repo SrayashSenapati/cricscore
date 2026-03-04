@@ -117,12 +117,3 @@ export default async function Home() {
     </div>
   );
 }
-```
-
----
-
-👉 After saving, run these in the terminal:
-```
-git add .
-git commit -m "Fix API URL for production"
-git push
