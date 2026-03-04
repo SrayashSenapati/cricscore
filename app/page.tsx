@@ -4,8 +4,9 @@ import AutoRefresh from "./components/AutoRefresh";
 
 async function getLiveMatches() {
   try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://cricscore-xi.vercel.app";
     const response = await fetch(
-      "http://localhost:3000/api/matches",
+      `${baseUrl}/api/matches`,
       { cache: "no-store" }
     );
     const data = await response.json();
@@ -116,3 +117,12 @@ export default async function Home() {
     </div>
   );
 }
+```
+
+---
+
+👉 After saving, run these in the terminal:
+```
+git add .
+git commit -m "Fix API URL for production"
+git push
