@@ -47,7 +47,7 @@ export default async function Home() {
                 Live scores, match updates and scorecards from around the world
               </p>
             </div>
-            <AutoRefresh interval={30} />
+            {/* <AutoRefresh interval={30} /> */}
           </div>
 
           {/* Stats bar */}

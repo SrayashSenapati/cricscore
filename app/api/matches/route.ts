@@ -10,7 +10,7 @@ export async function GET() {
 
     const response = await fetch(
       `https://api.cricapi.com/v1/currentMatches?apikey=${apiKey}&offset=0`,
-      { next: { revalidate: 300 } } // Cache for 5 MINUTES — saves 90% of API calls
+      { next: { revalidate: 3600 } } // Cache for 5 MINUTES — saves 90% of API calls
     );
 
     const data = await response.json();
