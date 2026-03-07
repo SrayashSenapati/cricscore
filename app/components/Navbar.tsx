@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { supabase } from "../lib/supabase";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   const navLinks = [
     { label: "Live Scores", href: "/" },
@@ -14,6 +17,25 @@ export default function Navbar() {
     { label: "Teams", href: "/teams" },
     { label: "News", href: "/news" },
   ];
+
+  useEffect(() => {
+    // Get current user on load
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+
+    // Listen for login/logout changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.push("/");
+  }
 
   return (
     <nav style={{
@@ -41,7 +63,6 @@ export default function Navbar() {
           gap: "10px",
           textDecoration: "none",
         }}>
-          {/* Cricket ball icon */}
           <div style={{
             width: "32px",
             height: "32px",
@@ -56,20 +77,9 @@ export default function Navbar() {
             🏏
           </div>
           <div>
-            <span style={{
-              color: "#e6edf3",
-              fontWeight: "700",
-              fontSize: "18px",
-              letterSpacing: "-0.3px",
-            }}>Cric</span>
-            <span style={{
-              color: "#3fb950",
-              fontWeight: "700",
-              fontSize: "18px",
-              letterSpacing: "-0.3px",
-            }}>Score</span>
+            <span style={{ color: "#e6edf3", fontWeight: "700", fontSize: "18px", letterSpacing: "-0.3px" }}>Cric</span>
+            <span style={{ color: "#3fb950", fontWeight: "700", fontSize: "18px", letterSpacing: "-0.3px" }}>Score</span>
           </div>
-          {/* Live pill */}
           <div style={{
             display: "flex",
             alignItems: "center",
@@ -85,14 +95,8 @@ export default function Navbar() {
               height: "5px",
               borderRadius: "50%",
               backgroundColor: "#f85149",
-              animation: "pulse 1.5s infinite",
             }}></div>
-            <span style={{
-              color: "#f85149",
-              fontSize: "10px",
-              fontWeight: "700",
-              letterSpacing: "0.08em",
-            }}>LIVE</span>
+            <span style={{ color: "#f85149", fontSize: "10px", fontWeight: "700", letterSpacing: "0.08em" }}>LIVE</span>
           </div>
         </Link>
 
@@ -119,6 +123,59 @@ export default function Navbar() {
               </Link>
             );
           })}
+
+          {/* Auth Button */}
+          {user ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginLeft: "8px" }}>
+              {/* User Avatar */}
+              <div style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                backgroundColor: "#3fb950",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "13px",
+                fontWeight: "700",
+                color: "#0d1117",
+              }}>
+                {user.email?.[0].toUpperCase()}
+              </div>
+              <button
+                onClick={handleSignOut}
+                style={{
+                  color: "#f85149",
+                  backgroundColor: "rgba(248,81,73,0.1)",
+                  border: "1px solid rgba(248,81,73,0.3)",
+                  padding: "6px 14px",
+                  borderRadius: "6px",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                }}
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/auth"
+              style={{
+                color: "#0d1117",
+                textDecoration: "none",
+                padding: "6px 16px",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: "600",
+                backgroundColor: "#3fb950",
+                marginLeft: "8px",
+                border: "1px solid transparent",
+              }}
+            >
+              Sign In
+            </Link>
+          )}
         </div>
 
         {/* Mobile button */}
@@ -163,6 +220,42 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          {/* Mobile Auth */}
+          {user ? (
+            <button
+              onClick={handleSignOut}
+              style={{
+                display: "block",
+                width: "100%",
+                textAlign: "left",
+                color: "#f85149",
+                backgroundColor: "transparent",
+                border: "none",
+                padding: "10px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Sign Out
+            </button>
+          ) : (
+            <Link
+              href="/auth"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                display: "block",
+                color: "#3fb950",
+                textDecoration: "none",
+                padding: "10px 0",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              Sign In 🏏
+            </Link>
+          )}
         </div>
       )}
 
