@@ -1,13 +1,10 @@
 import Navbar from "./components/Navbar";
 import MatchCard from "./components/MatchCard";
-import AutoRefresh from "./components/AutoRefresh";
 
 async function getLiveMatches() {
   try {
-    const response = await fetch(
-      `https://api.cricapi.com/v1/currentMatches?apikey=${process.env.CRICKET_API_KEY}&offset=0`,
-      { cache: "no-store" }
-    );
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://cricscore-xi.vercel.app";
+    const response = await fetch(`${baseUrl}/api/matches`, { cache: "no-store" });
     const data = await response.json();
     return data.data || [];
   } catch (error) {
@@ -33,42 +30,92 @@ export default async function Home() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#0d1117", color: "#e6edf3" }}>
+      <style>{`
+        .stats-bar {
+          display: flex;
+          gap: 24px;
+          margin-top: 20px;
+          padding: 16px 20px;
+          background-color: #161b22;
+          border: 1px solid #30363d;
+          border-radius: 10px;
+          flex-wrap: wrap;
+        }
+        .stats-divider {
+          width: 1px;
+          background-color: #30363d;
+        }
+        .match-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 16px;
+        }
+        @media (max-width: 768px) {
+          .stats-bar {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0;
+            background: transparent !important;
+            border: none !important;
+          }
+          .stats-item {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+          }
+          .stats-divider {
+            display: none;
+          }
+          .stats-number {
+            font-size: 24px !important;
+          }
+          .match-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .page-title {
+            font-size: 22px !important;
+          }
+        }
+      `}</style>
+
       <Navbar />
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px 24px" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "24px 16px" }}>
 
         {/* Page Header */}
         <div style={{ marginBottom: "32px" }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
             <div>
-              <h1 style={{ fontSize: "28px", fontWeight: "700", color: "#e6edf3", letterSpacing: "-0.5px", marginBottom: "6px" }}>
+              <h1 className="page-title" style={{ fontSize: "28px", fontWeight: "700", color: "#e6edf3", letterSpacing: "-0.5px", marginBottom: "6px" }}>
                 Cricket <span style={{ color: "#3fb950" }}>Live Scores</span>
               </h1>
               <p style={{ fontSize: "13px", color: "#7d8590" }}>
                 Live scores, match updates and scorecards from around the world
               </p>
             </div>
-            {/* <AutoRefresh interval={30} /> */}
           </div>
 
-          {/* Stats bar */}
-          <div style={{ display: "flex", gap: "24px", marginTop: "20px", padding: "16px 20px", backgroundColor: "#161b22", border: "1px solid #30363d", borderRadius: "10px", flexWrap: "wrap" }}>
-            <div>
-              <div style={{ fontSize: "20px", fontWeight: "700", color: "#f85149" }}>{liveMatches.length}</div>
+          {/* Stats Bar — horizontal on desktop, 2x2 grid on mobile */}
+          <div className="stats-bar">
+            <div className="stats-item" style={{ flex: 1 }}>
+              <div className="stats-number" style={{ fontSize: "20px", fontWeight: "700", color: "#f85149" }}>{liveMatches.length}</div>
               <div style={{ fontSize: "11px", color: "#7d8590", marginTop: "2px" }}>Live Now</div>
             </div>
-            <div style={{ width: "1px", backgroundColor: "#30363d" }}></div>
-            <div>
-              <div style={{ fontSize: "20px", fontWeight: "700", color: "#3fb950" }}>{completedMatches.length}</div>
+            <div className="stats-divider"></div>
+            <div className="stats-item" style={{ flex: 1 }}>
+              <div className="stats-number" style={{ fontSize: "20px", fontWeight: "700", color: "#3fb950" }}>{completedMatches.length}</div>
               <div style={{ fontSize: "11px", color: "#7d8590", marginTop: "2px" }}>Completed</div>
             </div>
-            <div style={{ width: "1px", backgroundColor: "#30363d" }}></div>
-            <div>
-              <div style={{ fontSize: "20px", fontWeight: "700", color: "#d4a853" }}>{upcomingMatches.length}</div>
+            <div className="stats-divider"></div>
+            <div className="stats-item" style={{ flex: 1 }}>
+              <div className="stats-number" style={{ fontSize: "20px", fontWeight: "700", color: "#d4a853" }}>{upcomingMatches.length}</div>
               <div style={{ fontSize: "11px", color: "#7d8590", marginTop: "2px" }}>Upcoming</div>
             </div>
-            <div style={{ width: "1px", backgroundColor: "#30363d" }}></div>
-            <div>
-              <div style={{ fontSize: "20px", fontWeight: "700", color: "#e6edf3" }}>{matches.length}</div>
+            <div className="stats-divider"></div>
+            <div className="stats-item" style={{ flex: 1 }}>
+              <div className="stats-number" style={{ fontSize: "20px", fontWeight: "700", color: "#e6edf3" }}>{matches.length}</div>
               <div style={{ fontSize: "11px", color: "#7d8590", marginTop: "2px" }}>Total Matches</div>
             </div>
           </div>
@@ -78,7 +125,7 @@ export default async function Home() {
         {liveMatches.length > 0 && (
           <section style={{ marginBottom: "40px" }}>
             <SectionHeader title="Live Now" count={liveMatches.length} color="#f85149" />
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "16px" }}>
+            <div className="match-grid">
               {liveMatches.map((match: any) => <MatchCard key={match.id} match={match} />)}
             </div>
           </section>
@@ -88,7 +135,7 @@ export default async function Home() {
         {upcomingMatches.length > 0 && (
           <section style={{ marginBottom: "40px" }}>
             <SectionHeader title="Upcoming" count={upcomingMatches.length} color="#3fb950" />
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "16px" }}>
+            <div className="match-grid">
               {upcomingMatches.map((match: any) => <MatchCard key={match.id} match={match} />)}
             </div>
           </section>
@@ -98,7 +145,7 @@ export default async function Home() {
         {completedMatches.length > 0 && (
           <section style={{ marginBottom: "40px" }}>
             <SectionHeader title="Recent Results" count={completedMatches.length} color="#7d8590" />
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "16px" }}>
+            <div className="match-grid">
               {completedMatches.map((match: any) => <MatchCard key={match.id} match={match} />)}
             </div>
           </section>
