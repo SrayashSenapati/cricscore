@@ -13,6 +13,12 @@ async function getLiveMatches() {
   }
 }
 
+function isFeatured(match: any) {
+  const name = (match.name || "").toLowerCase();
+  const keywords = ["world cup", "final", "semi-final", "champions trophy", "ipl", "india", "pakistan"];
+  return keywords.some((k) => name.includes(k));
+}
+
 function SectionHeader({ title, count, color = "#3fb950" }: { title: string, count: number, color?: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
@@ -25,49 +31,28 @@ function SectionHeader({ title, count, color = "#3fb950" }: { title: string, cou
 
 export default async function Home() {
   const matches = await getLiveMatches();
+
   const liveMatches = matches.filter((m: any) => m.matchStarted && !m.matchEnded);
   const completedMatches = matches.filter((m: any) => m.matchEnded);
   const upcomingMatches = matches.filter((m: any) => !m.matchStarted);
 
+  const featuredMatches = matches.filter((m: any) => isFeatured(m));
+  const featuredIds = new Set(featuredMatches.map((m: any) => m.id));
+
+  const regularLive = liveMatches.filter((m: any) => !featuredIds.has(m.id));
+  const regularUpcoming = upcomingMatches.filter((m: any) => !featuredIds.has(m.id));
+  const regularCompleted = completedMatches.filter((m: any) => !featuredIds.has(m.id));
+
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#0d1117", color: "#e6edf3" }}>
       <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-        .stats-bar {
-          display: flex;
-          gap: 24px;
-          margin-top: 20px;
-          padding: 16px 20px;
-          background-color: #161b22;
-          border: 1px solid #30363d;
-          border-radius: 10px;
-          flex-wrap: wrap;
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .stats-bar { display: flex; gap: 24px; margin-top: 20px; padding: 16px 20px; background-color: #161b22; border: 1px solid #30363d; border-radius: 10px; flex-wrap: wrap; }
         .stats-divider { width: 1px; background-color: #30363d; }
-        .match-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 16px;
-        }
+        .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
         @media (max-width: 768px) {
-          .stats-bar {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 0;
-            background: transparent !important;
-            border: none !important;
-          }
-          .stats-item {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 10px;
-            padding: 16px;
-            text-align: center;
-          }
+          .stats-bar { display: grid !important; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0; background: transparent !important; border: none !important; }
+          .stats-item { background-color: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 16px; text-align: center; }
           .stats-divider { display: none; }
           .stats-number { font-size: 24px !important; }
           .match-grid { grid-template-columns: 1fr !important; }
@@ -77,51 +62,6 @@ export default async function Home() {
 
       <Navbar />
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "24px 16px" }}>
-
-        {/* T20 World Cup Final Banner */}
-        <div style={{
-          background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)",
-          border: "1px solid rgba(212,168,83,0.4)",
-          borderRadius: "16px",
-          padding: "20px 24px",
-          marginBottom: "24px",
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          <div style={{ position: "absolute", top: "-40px", right: "-40px", width: "200px", height: "200px", borderRadius: "50%", background: "radial-gradient(circle, rgba(212,168,83,0.15) 0%, transparent 70%)", pointerEvents: "none" }}></div>
-          <div style={{ position: "absolute", bottom: "-40px", left: "-40px", width: "200px", height: "200px", borderRadius: "50%", background: "radial-gradient(circle, rgba(63,185,80,0.1) 0%, transparent 70%)", pointerEvents: "none" }}></div>
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "28px" }}>🏆</span>
-              <div>
-                <div style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "0.12em", color: "#d4a853", marginBottom: "3px" }}>
-                  ICC T20 WORLD CUP 2026 • FINAL
-                </div>
-                <div style={{ fontSize: "20px", fontWeight: "700", color: "#e6edf3" }}>
-                  🇮🇳 India <span style={{ color: "#d4a853", margin: "0 8px" }}>vs</span> New Zealand 🇳🇿
-                </div>
-              </div>
-              <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "6px", backgroundColor: "rgba(248,81,73,0.15)", border: "1px solid rgba(248,81,73,0.4)", borderRadius: "100px", padding: "4px 12px" }}>
-                <div style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#f85149", animation: "pulse 1s infinite" }}></div>
-                <span style={{ color: "#f85149", fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em" }}>TONIGHT</span>
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", borderTop: "1px solid rgba(212,168,83,0.15)", paddingTop: "12px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ fontSize: "12px" }}>📍</span>
-                <span style={{ color: "#7d8590", fontSize: "12px" }}>Narendra Modi Stadium, Ahmedabad</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ fontSize: "12px" }}>🕖</span>
-                <span style={{ color: "#7d8590", fontSize: "12px" }}>7:00 PM IST</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ fontSize: "12px" }}>📺</span>
-                <span style={{ color: "#7d8590", fontSize: "12px" }}>Live on CricScore at match time</span>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Page Header */}
         <div style={{ marginBottom: "32px" }}>
@@ -160,29 +100,44 @@ export default async function Home() {
           </div>
         </div>
 
-        {liveMatches.length > 0 && (
+        {/* Featured Matches — always on top */}
+        {featuredMatches.length > 0 && (
           <section style={{ marginBottom: "40px" }}>
-            <SectionHeader title="Live Now" count={liveMatches.length} color="#f85149" />
+            <SectionHeader title="Featured" count={featuredMatches.length} color="#d4a853" />
             <div className="match-grid">
-              {liveMatches.map((match: any) => <MatchCard key={match.id} match={match} />)}
+              {featuredMatches.map((match: any) => (
+                <MatchCard key={match.id} match={match} featured={true} />
+              ))}
             </div>
           </section>
         )}
 
-        {upcomingMatches.length > 0 && (
+        {/* Live Matches */}
+        {regularLive.length > 0 && (
           <section style={{ marginBottom: "40px" }}>
-            <SectionHeader title="Upcoming" count={upcomingMatches.length} color="#3fb950" />
+            <SectionHeader title="Live Now" count={regularLive.length} color="#f85149" />
             <div className="match-grid">
-              {upcomingMatches.map((match: any) => <MatchCard key={match.id} match={match} />)}
+              {regularLive.map((match: any) => <MatchCard key={match.id} match={match} />)}
             </div>
           </section>
         )}
 
-        {completedMatches.length > 0 && (
+        {/* Upcoming Matches */}
+        {regularUpcoming.length > 0 && (
           <section style={{ marginBottom: "40px" }}>
-            <SectionHeader title="Recent Results" count={completedMatches.length} color="#7d8590" />
+            <SectionHeader title="Upcoming" count={regularUpcoming.length} color="#3fb950" />
             <div className="match-grid">
-              {completedMatches.map((match: any) => <MatchCard key={match.id} match={match} />)}
+              {regularUpcoming.map((match: any) => <MatchCard key={match.id} match={match} />)}
+            </div>
+          </section>
+        )}
+
+        {/* Completed Matches */}
+        {regularCompleted.length > 0 && (
+          <section style={{ marginBottom: "40px" }}>
+            <SectionHeader title="Recent Results" count={regularCompleted.length} color="#7d8590" />
+            <div className="match-grid">
+              {regularCompleted.map((match: any) => <MatchCard key={match.id} match={match} />)}
             </div>
           </section>
         )}
