@@ -17,7 +17,7 @@ function isFeatured(match: any) {
   const teams = (match.teams || []).join(" ").toLowerCase();
   const hasInd = teams.includes("india") || teams.includes("ind");
   const hasNz = teams.includes("new zealand") || teams.includes("nz");
-  return hasInd && hasNz;
+  return hasInd && hasNz && !match.matchEnded;
 }
 
 function SectionHeader({ title, count, color = "#3fb950" }: { title: string, count: number, color?: string }) {
