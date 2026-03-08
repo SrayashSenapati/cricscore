@@ -10,9 +10,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const navLinks = [
+ const navLinks = [
     { label: "Live", href: "/", icon: "🏏" },
     { label: "Series", href: "/series", icon: "📋" },
+    { label: "Players", href: "/players", icon: "🧑‍🤝‍🧑" },
     { label: "Teams", href: "/teams", icon: "👥" },
     { label: "News", href: "/news", icon: "📰" },
   ];
