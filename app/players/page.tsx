@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
 
 export default function PlayersPage() {
@@ -8,6 +9,7 @@ export default function PlayersPage() {
   const [players, setPlayers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const router = useRouter();
 
   async function handleSearch() {
     if (!search.trim()) return;
@@ -37,6 +39,7 @@ export default function PlayersPage() {
           </h1>
           <p style={{ color:"#7d8590", fontSize:"13px" }}>Search any cricket player in the world</p>
         </div>
+
         <div style={{ display:"flex", gap:"12px", marginBottom:"32px" }}>
           <input
             type="text"
@@ -70,7 +73,11 @@ export default function PlayersPage() {
         {!loading && players.length > 0 && (
           <div style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
             {players.map((player: any) => (
-              <div key={player.id} style={{ backgroundColor:"#161b22", border:"1px solid #30363d", borderRadius:"12px", padding:"16px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:"12px" }}>
+              <div
+                key={player.id}
+                onClick={() => router.push("/players/" + player.id)}
+                style={{ backgroundColor:"#161b22", border:"1px solid #30363d", borderRadius:"12px", padding:"16px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:"12px", cursor:"pointer" }}
+              >
                 <div style={{ display:"flex", alignItems:"center", gap:"14px" }}>
                   <div style={{ width:"44px", height:"44px", borderRadius:"50%", backgroundColor:"#0d1117", border:"1px solid #30363d", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"18px" }}>
                     🏏
