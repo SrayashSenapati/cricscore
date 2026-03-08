@@ -3,11 +3,13 @@ import Link from "next/link";
 
 async function getMatchDetail(id: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://cricscore-xi.vercel.app";
-    const response = await fetch(
-      `${baseUrl}/api/match-detail?id=${id}`,
-      { cache: "no-store" }
-    );
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL || "https://cricscore-xi.vercel.app";
+
+    const response = await fetch(`${baseUrl}/api/match-detail?id=${id}`, {
+      cache: "no-store",
+    });
+
     const data = await response.json();
     return data.data || null;
   } catch (error) {
@@ -21,25 +23,43 @@ function ScoreCard({ innings }: { innings: any }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {innings.map((inning: any, index: number) => (
-        <div key={index} style={{
-          backgroundColor: "#161b22",
-          border: "1px solid #30363d",
-          borderRadius: "12px",
-          overflow: "hidden",
-        }}>
-          <div style={{
-            padding: "16px 20px",
-            borderBottom: "1px solid #30363d",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            background: "linear-gradient(135deg, #1c2128, #161b22)",
-          }}>
-            <h3 style={{ color: "#e6edf3", fontWeight: "700", fontSize: "16px" }}>
+        <div
+          key={index}
+          style={{
+            backgroundColor: "#161b22",
+            border: "1px solid #30363d",
+            borderRadius: "12px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "16px 20px",
+              borderBottom: "1px solid #30363d",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              background: "linear-gradient(135deg, #1c2128, #161b22)",
+            }}
+          >
+            <h3
+              style={{
+                color: "#e6edf3",
+                fontWeight: "700",
+                fontSize: "16px",
+              }}
+            >
               {inning.inning}
             </h3>
+
             <div style={{ textAlign: "right" }}>
-              <div style={{ color: "#3fb950", fontWeight: "700", fontSize: "22px" }}>
+              <div
+                style={{
+                  color: "#3fb950",
+                  fontWeight: "700",
+                  fontSize: "22px",
+                }}
+              >
                 {inning.r}/{inning.w}
               </div>
               <div style={{ color: "#7d8590", fontSize: "12px" }}>
@@ -50,35 +70,85 @@ function ScoreCard({ innings }: { innings: any }) {
 
           {inning.batsman && inning.batsman.length > 0 && (
             <div>
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
-                padding: "8px 20px",
-                backgroundColor: "#0d1117",
-                borderBottom: "1px solid #21262d",
-              }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
+                  padding: "8px 20px",
+                  backgroundColor: "#0d1117",
+                  borderBottom: "1px solid #21262d",
+                }}
+              >
                 {["Batter", "R", "B", "4s", "6s"].map((h) => (
-                  <div key={h} style={{ color: "#7d8590", fontSize: "11px", fontWeight: "600", letterSpacing: "0.05em" }}>
+                  <div
+                    key={h}
+                    style={{
+                      color: "#7d8590",
+                      fontSize: "11px",
+                      fontWeight: "600",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     {h}
                   </div>
                 ))}
               </div>
+
               {inning.batsman.map((b: any, i: number) => (
-                <div key={i} style={{
-                  display: "grid",
-                  gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
-                  padding: "10px 20px",
-                  borderBottom: "1px solid #21262d",
-                  backgroundColor: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
-                }}>
+                <div
+                  key={i}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
+                    padding: "10px 20px",
+                    borderBottom: "1px solid #21262d",
+                    backgroundColor:
+                      i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
+                  }}
+                >
                   <div>
-                    <div style={{ color: "#e6edf3", fontSize: "13px", fontWeight: "500" }}>{b.name}</div>
-                    <div style={{ color: "#7d8590", fontSize: "11px", marginTop: "2px" }}>{b.dismissal || "batting"}</div>
+                    <div
+                      style={{
+                        color: "#e6edf3",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {b.name}
+                    </div>
+
+                    <div
+                      style={{
+                        color: "#7d8590",
+                        fontSize: "11px",
+                        marginTop: "2px",
+                      }}
+                    >
+                      {b.dismissal || "batting"}
+                    </div>
                   </div>
-                  <div style={{ color: "#e6edf3", fontSize: "13px", fontWeight: "700" }}>{b.r}</div>
-                  <div style={{ color: "#7d8590", fontSize: "13px" }}>{b.b}</div>
-                  <div style={{ color: "#7d8590", fontSize: "13px" }}>{b["4s"]}</div>
-                  <div style={{ color: "#7d8590", fontSize: "13px" }}>{b["6s"]}</div>
+
+                  <div
+                    style={{
+                      color: "#e6edf3",
+                      fontSize: "13px",
+                      fontWeight: "700",
+                    }}
+                  >
+                    {b.r}
+                  </div>
+
+                  <div style={{ color: "#7d8590", fontSize: "13px" }}>
+                    {b.b}
+                  </div>
+
+                  <div style={{ color: "#7d8590", fontSize: "13px" }}>
+                    {b["4s"]}
+                  </div>
+
+                  <div style={{ color: "#7d8590", fontSize: "13px" }}>
+                    {b["6s"]}
+                  </div>
                 </div>
               ))}
             </div>
@@ -86,33 +156,74 @@ function ScoreCard({ innings }: { innings: any }) {
 
           {inning.bowler && inning.bowler.length > 0 && (
             <div style={{ marginTop: "8px" }}>
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
-                padding: "8px 20px",
-                backgroundColor: "#0d1117",
-                borderBottom: "1px solid #21262d",
-                borderTop: "1px solid #30363d",
-              }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
+                  padding: "8px 20px",
+                  backgroundColor: "#0d1117",
+                  borderBottom: "1px solid #21262d",
+                  borderTop: "1px solid #30363d",
+                }}
+              >
                 {["Bowler", "O", "M", "R", "W"].map((h) => (
-                  <div key={h} style={{ color: "#7d8590", fontSize: "11px", fontWeight: "600", letterSpacing: "0.05em" }}>
+                  <div
+                    key={h}
+                    style={{
+                      color: "#7d8590",
+                      fontSize: "11px",
+                      fontWeight: "600",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     {h}
                   </div>
                 ))}
               </div>
+
               {inning.bowler.map((b: any, i: number) => (
-                <div key={i} style={{
-                  display: "grid",
-                  gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
-                  padding: "10px 20px",
-                  borderBottom: "1px solid #21262d",
-                  backgroundColor: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
-                }}>
-                  <div style={{ color: "#e6edf3", fontSize: "13px", fontWeight: "500" }}>{b.name}</div>
-                  <div style={{ color: "#7d8590", fontSize: "13px" }}>{b.o}</div>
-                  <div style={{ color: "#7d8590", fontSize: "13px" }}>{b.m}</div>
-                  <div style={{ color: "#7d8590", fontSize: "13px" }}>{b.r}</div>
-                  <div style={{ color: b.w > 0 ? "#3fb950" : "#7d8590", fontSize: "13px", fontWeight: b.w > 0 ? "700" : "400" }}>{b.w}</div>
+                <div
+                  key={i}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
+                    padding: "10px 20px",
+                    borderBottom: "1px solid #21262d",
+                    backgroundColor:
+                      i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
+                  }}
+                >
+                  <div
+                    style={{
+                      color: "#e6edf3",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {b.name}
+                  </div>
+
+                  <div style={{ color: "#7d8590", fontSize: "13px" }}>
+                    {b.o}
+                  </div>
+
+                  <div style={{ color: "#7d8590", fontSize: "13px" }}>
+                    {b.m}
+                  </div>
+
+                  <div style={{ color: "#7d8590", fontSize: "13px" }}>
+                    {b.r}
+                  </div>
+
+                  <div
+                    style={{
+                      color: b.w > 0 ? "#3fb950" : "#7d8590",
+                      fontSize: "13px",
+                      fontWeight: b.w > 0 ? "700" : "400",
+                    }}
+                  >
+                    {b.w}
+                  </div>
                 </div>
               ))}
             </div>
@@ -126,27 +237,58 @@ function ScoreCard({ innings }: { innings: any }) {
 export default async function MatchDetail({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = await params;
+  const { id } = params;
+
   const match = await getMatchDetail(id);
 
   if (!match) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: "#0d1117", color: "#e6edf3" }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#0d1117",
+          color: "#e6edf3",
+        }}
+      >
         <Navbar />
-        <div style={{ maxWidth: "900px", margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
+
+        <div
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            padding: "80px 24px",
+            textAlign: "center",
+          }}
+        >
           <p style={{ fontSize: "48px", marginBottom: "16px" }}>🏏</p>
-          <h2 style={{ fontSize: "24px", fontWeight: "700", marginBottom: "8px" }}>Match not found</h2>
-          <p style={{ color: "#7d8590", marginBottom: "24px" }}>This match may have ended or the data is unavailable.</p>
-          <Link href="/" style={{
-            color: "#0d1117",
-            backgroundColor: "#3fb950",
-            padding: "10px 24px",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontWeight: "600",
-          }}>
+
+          <h2
+            style={{
+              fontSize: "24px",
+              fontWeight: "700",
+              marginBottom: "8px",
+            }}
+          >
+            Match not found
+          </h2>
+
+          <p style={{ color: "#7d8590", marginBottom: "24px" }}>
+            This match may have ended or the data is unavailable.
+          </p>
+
+          <Link
+            href="/"
+            style={{
+              color: "#0d1117",
+              backgroundColor: "#3fb950",
+              padding: "10px 24px",
+              borderRadius: "8px",
+              textDecoration: "none",
+              fontWeight: "600",
+            }}
+          >
             Back to Live Scores
           </Link>
         </div>
@@ -158,188 +300,78 @@ export default async function MatchDetail({
   const team1 = match.teamInfo?.[0];
   const team2 = match.teamInfo?.[1];
 
+  const shareUrl = "https://cricscore-xi.vercel.app/match/" + match.id;
+
+  const shareMessage = encodeURIComponent(
+    "🏏 " +
+      (match.teams?.[0] || "") +
+      " vs " +
+      (match.teams?.[1] || "") +
+      "\n" +
+      (match.status || "") +
+      "\n\nLive on CricScore 👉 " +
+      shareUrl
+  );
+
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#0d1117", color: "#e6edf3" }}>
       <Navbar />
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "32px 24px" }}>
 
-        <Link href="/" style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "6px",
-          color: "#7d8590",
-          textDecoration: "none",
-          fontSize: "13px",
-          marginBottom: "24px",
-        }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "32px 24px" }}>
+        <Link
+          href="/"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            color: "#7d8590",
+            textDecoration: "none",
+            fontSize: "13px",
+            marginBottom: "24px",
+          }}
+        >
           Back to Live Scores
         </Link>
 
-        <div style={{
-          backgroundColor: "#161b22",
-          border: "1px solid #30363d",
-          borderRadius: "16px",
-          padding: "28px",
-          marginBottom: "28px",
-          background: "linear-gradient(135deg, #1c2128 0%, #161b22 100%)",
-        }}>
-          <div style={{ display: "flex", gap: "8px", marginBottom: "20px", flexWrap: "wrap" }}>
-            <span style={{
-              fontSize: "11px",
-              color: "#7d8590",
-              backgroundColor: "#0d1117",
-              padding: "3px 10px",
-              borderRadius: "100px",
-              border: "1px solid #30363d",
-            }}>
-              {match.name?.split(",")[1]?.trim() || "Cricket Match"}
-            </span>
-            <span style={{
-              fontSize: "11px",
-              color: "#d4a853",
-              backgroundColor: "rgba(212,168,83,0.1)",
-              padding: "3px 10px",
-              borderRadius: "100px",
-              border: "1px solid rgba(212,168,83,0.3)",
-            }}>
-              {match.matchType?.toUpperCase()}
-            </span>
-            {isLive && (
-              <span style={{
-                fontSize: "11px",
-                color: "#f85149",
-                backgroundColor: "rgba(248,81,73,0.1)",
-                padding: "3px 10px",
-                borderRadius: "100px",
-                border: "1px solid rgba(248,81,73,0.3)",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-              }}>
-                <span style={{
-                  width: "5px",
-                  height: "5px",
-                  borderRadius: "50%",
-                  backgroundColor: "#f85149",
-                  display: "inline-block",
-                }}></span>
-                LIVE
-              </span>
-            )}
-            {match.matchEnded && (
-              <span style={{
-                fontSize: "11px",
-                color: "#3fb950",
-                backgroundColor: "rgba(63,185,80,0.1)",
-                padding: "3px 10px",
-                borderRadius: "100px",
-                border: "1px solid rgba(63,185,80,0.3)",
-              }}>
-                COMPLETED
-              </span>
-            )}
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}>
-            <div style={{ textAlign: "center", flex: 1 }}>
-              {team1?.img ? (
-                <img src={team1.img} alt={team1.name} style={{ width: "52px", height: "52px", borderRadius: "50%", marginBottom: "8px" }} />
-              ) : (
-                <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏏</div>
-              )}
-              <div style={{ color: "#e6edf3", fontWeight: "700", fontSize: "16px" }}>{match.teams?.[0]}</div>
-            </div>
-
-            <div style={{ textAlign: "center", flex: 2 }}>
-              <div style={{ color: "#7d8590", fontSize: "12px", marginBottom: "12px" }}>VS</div>
-              {match.score && match.score.length > 0 ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {match.score.map((s: any, i: number) => (
-                    <div key={i} style={{
-                      backgroundColor: "#0d1117",
-                      border: "1px solid #30363d",
-                      borderRadius: "8px",
-                      padding: "8px 14px",
-                    }}>
-                      <div style={{ color: "#7d8590", fontSize: "11px", marginBottom: "2px" }}>
-                        {s.inning}
-                      </div>
-                      <div>
-                        <span style={{ color: "#3fb950", fontWeight: "700", fontSize: "18px" }}>
-                          {s.r}/{s.w}
-                        </span>
-                        <span style={{ color: "#7d8590", fontSize: "12px", marginLeft: "6px" }}>
-                          ({s.o} ov)
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div style={{ color: "#7d8590", fontSize: "14px" }}>
-                  {match.matchStarted ? "In Progress" : "Yet to start"}
-                </div>
-              )}
-            </div>
-
-            <div style={{ textAlign: "center", flex: 1 }}>
-              {team2?.img ? (
-                <img src={team2.img} alt={team2.name} style={{ width: "52px", height: "52px", borderRadius: "50%", marginBottom: "8px" }} />
-              ) : (
-                <div style={{ fontSize: "32px", marginBottom: "8px" }}>🏏</div>
-              )}
-              <div style={{ color: "#e6edf3", fontWeight: "700", fontSize: "16px" }}>{match.teams?.[1]}</div>
-            </div>
-          </div>
-
-          {match.status && (
-            <div style={{
-              marginTop: "20px",
-              padding: "12px 16px",
-              backgroundColor: "rgba(63,185,80,0.06)",
-              border: "1px solid rgba(63,185,80,0.15)",
+        <div style={{ marginTop: "16px" }}>
+          <a
+            href={"https://wa.me/?text=" + shareMessage}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              backgroundColor: "rgba(37,211,102,0.1)",
+              border: "1px solid rgba(37,211,102,0.3)",
+              color: "#25d366",
+              padding: "8px 16px",
               borderRadius: "8px",
-              textAlign: "center",
-            }}>
-              <p style={{ color: "#3fb950", fontSize: "14px", fontWeight: "500" }}>{match.status}</p>
-            </div>
-          )}
-
-          {match.venue && (
-            <div style={{ marginTop: "16px", display: "flex", alignItems: "center", gap: "6px" }}>
-              <span style={{ fontSize: "12px" }}>📍</span>
-              <span style={{ color: "#7d8590", fontSize: "12px" }}>{match.venue}</span>
-            </div>
-          )}
+              fontSize: "13px",
+              fontWeight: "600",
+              textDecoration: "none",
+            }}
+          >
+            📲 Share on WhatsApp
+          </a>
         </div>
 
         {match.scorecard && match.scorecard.length > 0 && (
           <div>
-            <h2 style={{
-              fontSize: "16px",
-              fontWeight: "700",
-              color: "#e6edf3",
-              marginBottom: "16px",
-            }}>
+            <h2
+              style={{
+                fontSize: "16px",
+                fontWeight: "700",
+                color: "#e6edf3",
+                marginBottom: "16px",
+              }}
+            >
               📊 Scorecard
             </h2>
+
             <ScoreCard innings={match.scorecard} />
           </div>
         )}
-
-        {(!match.scorecard || match.scorecard.length === 0) && match.matchStarted && (
-          <div style={{
-            backgroundColor: "#161b22",
-            border: "1px solid #30363d",
-            borderRadius: "12px",
-            padding: "40px",
-            textAlign: "center",
-          }}>
-            <p style={{ fontSize: "32px", marginBottom: "12px" }}>⏳</p>
-            <p style={{ color: "#7d8590", fontSize: "14px" }}>Scorecard loading...</p>
-          </div>
-        )}
-
       </div>
     </div>
   );
