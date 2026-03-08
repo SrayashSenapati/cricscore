@@ -14,11 +14,10 @@ async function getLiveMatches() {
 }
 
 function isFeatured(match: any) {
-  const name = (match.name || "").toLowerCase();
   const teams = (match.teams || []).join(" ").toLowerCase();
-  const combined = name + " " + teams;
-  const keywords = ["world cup", "final", "semi-final", "champions trophy", "ipl", "ind", "pak", "india", "pakistan", "new zealand", "nz", "australia", "england"];
-  return keywords.some((k) => combined.includes(k));
+  const hasInd = teams.includes("india") || teams.includes("ind");
+  const hasNz = teams.includes("new zealand") || teams.includes("nz");
+  return hasInd && hasNz;
 }
 
 function SectionHeader({ title, count, color = "#3fb950" }: { title: string, count: number, color?: string }) {
