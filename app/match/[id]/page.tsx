@@ -115,6 +115,18 @@ export default async function MatchDetail({ params }: { params: Promise<{ id: st
           )}
         </div>
 
+
+          <div style={{ marginTop: "16px" }}>
+            
+              href={"https://wa.me/?text=" + encodeURIComponent((match.teams ? match.teams[0] : "") + " vs " + (match.teams ? match.teams[1] : "") + " - " + (match.status || "") + " - Live on CricScore: https://cricscore-xi.vercel.app/match/" + match.id)}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: "rgba(37,211,102,0.1)", border: "1px solid rgba(37,211,102,0.3)", color: "#25d366", padding: "8px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: "600", textDecoration: "none" }}
+            >
+              Share on WhatsApp
+            </a>
+          </div>
+
         {match.scorecard && match.scorecard.length > 0 && (
           <div>
             <h2 style={{ fontSize: "16px", fontWeight: "700", color: "#e6edf3", marginBottom: "16px" }}>Scorecard</h2>
