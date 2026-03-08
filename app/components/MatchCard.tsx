@@ -32,64 +32,73 @@ export default function MatchCard({ match, featured = false }: { match: any, fea
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         style={{
-          background: hovered
-            ? "linear-gradient(135deg, #1a2a1a 0%, #1a1a2e 50%, #2a1a0a 100%)"
-            : "linear-gradient(135deg, #0f1f0f 0%, #1a1a2e 50%, #1f1400 100%)",
-          border: "1px solid rgba(212,168,83,0.5)",
-          borderRadius: "16px",
-          padding: "24px",
+          background: "linear-gradient(135deg, #0a1628 0%, #1a1200 30%, #0a1628 60%, #001a0a 100%)",
+          border: "2px solid",
+          borderColor: hovered ? "#f0c040" : "#d4a853",
+          borderRadius: "20px",
+          padding: "28px 32px",
           cursor: "pointer",
-          transition: "all 0.2s",
+          transition: "all 0.3s",
           width: "100%",
           boxSizing: "border-box",
           position: "relative",
           overflow: "hidden",
-          marginBottom: "8px",
+          animation: "glow 3s infinite",
         }}
       >
-        {/* Glow effects */}
-        <div style={{ position: "absolute", top: "-60px", right: "-60px", width: "200px", height: "200px", borderRadius: "50%", background: "radial-gradient(circle, rgba(212,168,83,0.12) 0%, transparent 70%)", pointerEvents: "none" }}></div>
-        <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: "200px", height: "200px", borderRadius: "50%", background: "radial-gradient(circle, rgba(63,185,80,0.08) 0%, transparent 70%)", pointerEvents: "none" }}></div>
+        {/* Top shimmer line */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, transparent, #d4a853, #f0c040, #d4a853, transparent)", backgroundSize: "200% 100%", animation: "shimmer 2s infinite linear" }}></div>
+
+        {/* Glow blobs */}
+        <div style={{ position: "absolute", top: "-80px", right: "-80px", width: "250px", height: "250px", borderRadius: "50%", background: "radial-gradient(circle, rgba(212,168,83,0.18) 0%, transparent 70%)", pointerEvents: "none" }}></div>
+        <div style={{ position: "absolute", bottom: "-80px", left: "-80px", width: "250px", height: "250px", borderRadius: "50%", background: "radial-gradient(circle, rgba(63,185,80,0.1) 0%, transparent 70%)", pointerEvents: "none" }}></div>
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "400px", height: "400px", borderRadius: "50%", background: "radial-gradient(circle, rgba(212,168,83,0.04) 0%, transparent 60%)", pointerEvents: "none" }}></div>
 
         <div style={{ position: "relative", zIndex: 1 }}>
-          {/* Featured label */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "10px", fontWeight: "700", color: "#d4a853", backgroundColor: "rgba(212,168,83,0.15)", border: "1px solid rgba(212,168,83,0.4)", padding: "3px 10px", borderRadius: "100px", letterSpacing: "0.1em" }}>
-              FEATURED MATCH
+
+          {/* Badges row */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "10px", fontWeight: "800", color: "#0d1117", background: "linear-gradient(90deg, #d4a853, #f0c040, #d4a853)", padding: "4px 12px", borderRadius: "100px", letterSpacing: "0.12em" }}>
+              FEATURED
             </span>
-            <span style={{ fontSize: "10px", fontWeight: "600", color: "#d4a853", backgroundColor: "rgba(212,168,83,0.1)", border: "1px solid rgba(212,168,83,0.3)", padding: "3px 8px", borderRadius: "100px" }}>
+            <span style={{ fontSize: "10px", fontWeight: "700", color: "#d4a853", backgroundColor: "rgba(212,168,83,0.12)", border: "1px solid rgba(212,168,83,0.4)", padding: "3px 10px", borderRadius: "100px" }}>
               {match.matchType?.toUpperCase()}
             </span>
             {isLive && (
-              <span style={{ fontSize: "10px", fontWeight: "600", color: "#f85149", backgroundColor: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)", padding: "3px 8px", borderRadius: "100px", display: "flex", alignItems: "center", gap: "4px" }}>
-                <span style={{ width: "5px", height: "5px", borderRadius: "50%", backgroundColor: "#f85149", display: "inline-block", animation: "pulse 1s infinite" }}></span>
-                LIVE
+              <span style={{ fontSize: "10px", fontWeight: "700", color: "#f85149", backgroundColor: "rgba(248,81,73,0.12)", border: "1px solid rgba(248,81,73,0.4)", padding: "3px 10px", borderRadius: "100px", display: "flex", alignItems: "center", gap: "5px" }}>
+                <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#f85149", display: "inline-block", animation: "pulse 1s infinite" }}></span>
+                LIVE NOW
+              </span>
+            )}
+            {!match.matchStarted && (
+              <span style={{ fontSize: "10px", fontWeight: "700", color: "#3fb950", backgroundColor: "rgba(63,185,80,0.12)", border: "1px solid rgba(63,185,80,0.4)", padding: "3px 10px", borderRadius: "100px" }}>
+                UPCOMING
               </span>
             )}
             {isCompleted && (
-              <span style={{ fontSize: "10px", color: "#7d8590", backgroundColor: "rgba(125,133,144,0.1)", border: "1px solid rgba(125,133,144,0.2)", padding: "3px 8px", borderRadius: "100px" }}>
+              <span style={{ fontSize: "10px", color: "#7d8590", backgroundColor: "rgba(125,133,144,0.1)", border: "1px solid rgba(125,133,144,0.2)", padding: "3px 10px", borderRadius: "100px" }}>
                 COMPLETED
               </span>
             )}
           </div>
 
           {/* Match name */}
-          <div style={{ color: "#7d8590", fontSize: "11px", marginBottom: "16px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <div style={{ fontSize: "12px", color: "#7d8590", marginBottom: "24px" }}>
             {match.name}
           </div>
 
-          {/* Teams + Scores */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "#e6edf3", fontSize: "18px", fontWeight: "700" }}>{team1}</span>
-              <span style={{ color: team1Score ? "#3fb950" : "#7d8590", fontSize: "16px", fontWeight: "700" }}>
+          {/* Teams + Scores — big and bold */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid rgba(212,168,83,0.15)" }}>
+              <span style={{ color: "#ffffff", fontSize: "22px", fontWeight: "800", letterSpacing: "-0.5px" }}>{team1}</span>
+              <span style={{ color: team1Score ? "#3fb950" : "#4a5568", fontSize: "20px", fontWeight: "800" }}>
                 {formatScore(team1Score) || (match.matchStarted ? "—" : "Yet to bat")}
               </span>
             </div>
-            <div style={{ textAlign: "center", color: "#d4a853", fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em" }}>VS</div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "#e6edf3", fontSize: "18px", fontWeight: "700" }}>{team2}</span>
-              <span style={{ color: team2Score ? "#3fb950" : "#7d8590", fontSize: "16px", fontWeight: "700" }}>
+            <div style={{ textAlign: "center", padding: "10px 0", color: "#d4a853", fontSize: "13px", fontWeight: "800", letterSpacing: "0.2em" }}>VS</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderTop: "1px solid rgba(212,168,83,0.15)" }}>
+              <span style={{ color: "#ffffff", fontSize: "22px", fontWeight: "800", letterSpacing: "-0.5px" }}>{team2}</span>
+              <span style={{ color: team2Score ? "#3fb950" : "#4a5568", fontSize: "20px", fontWeight: "800" }}>
                 {formatScore(team2Score) || (match.matchStarted ? "—" : "Yet to bat")}
               </span>
             </div>
@@ -97,17 +106,22 @@ export default function MatchCard({ match, featured = false }: { match: any, fea
 
           {/* Status */}
           {match.status && (
-            <div style={{ marginTop: "16px", padding: "10px 14px", backgroundColor: "rgba(63,185,80,0.06)", border: "1px solid rgba(63,185,80,0.15)", borderRadius: "8px" }}>
-              <p style={{ color: "#3fb950", fontSize: "12px", fontWeight: "500" }}>{match.status}</p>
+            <div style={{ marginTop: "20px", padding: "12px 16px", background: "rgba(63,185,80,0.06)", border: "1px solid rgba(63,185,80,0.2)", borderRadius: "10px" }}>
+              <p style={{ color: "#3fb950", fontSize: "13px", fontWeight: "600" }}>{match.status}</p>
             </div>
           )}
 
-          {/* Venue */}
-          {match.venue && (
-            <div style={{ marginTop: "10px", fontSize: "11px", color: "#7d8590", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              Venue: {match.venue}
-            </div>
-          )}
+          {/* Venue + CTA row */}
+          <div style={{ marginTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            {match.venue && (
+              <span style={{ color: "#7d8590", fontSize: "11px" }}>
+                {match.venue}
+              </span>
+            )}
+            <span style={{ fontSize: "12px", fontWeight: "700", color: "#d4a853", marginLeft: "auto" }}>
+              View Scorecard
+            </span>
+          </div>
         </div>
       </div>
     );
