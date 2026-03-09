@@ -51,7 +51,7 @@ function buildTables(stats: any[]) {
 }
 
 function StatTable({ title, data, keys, labels, color }: any) {
-  const formats = Object.keys(data).filter(f => ["odi","t20i","test","ipl","t20"].includes(f));
+    const formats = Object.keys(data).filter(f => ["odi","t20i","test","ipl"].includes(f));
   if (formats.length === 0) return null;
 
   return (
