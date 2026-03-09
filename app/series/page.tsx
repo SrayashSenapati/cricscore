@@ -1,218 +1,159 @@
-import Link from "next/link";
 import Navbar from "../components/Navbar";
 
-const ongoingSeries = [
-  {
-    id: 1,
-    name: "India tour of Australia 2024",
-    shortName: "IND tour of AUS",
-    type: "T20I",
-    teams: ["🇮🇳 India", "🇦🇺 Australia"],
-    matches: "5 T20Is",
-    startDate: "Dec 1, 2024",
-    endDate: "Dec 15, 2024",
-    status: "ongoing",
-    matchesPlayed: "2/5",
-    venue: "Australia",
-  },
-  {
-    id: 2,
-    name: "England tour of South Africa 2024",
-    shortName: "ENG tour of SA",
-    type: "ODI",
-    teams: ["🏴󠁧󠁢󠁥󠁮󠁧󠁿 England", "🇿🇦 South Africa"],
-    matches: "3 ODIs",
-    startDate: "Dec 3, 2024",
-    endDate: "Dec 10, 2024",
-    status: "ongoing",
-    matchesPlayed: "3/3",
-    venue: "South Africa",
-  },
-  {
-    id: 3,
-    name: "Pakistan vs New Zealand 2024",
-    shortName: "PAK vs NZ",
-    type: "Test",
-    teams: ["🇵🇰 Pakistan", "🇳🇿 New Zealand"],
-    matches: "2 Tests",
-    startDate: "Dec 5, 2024",
-    endDate: "Dec 20, 2024",
-    status: "ongoing",
-    matchesPlayed: "0/2",
-    venue: "Pakistan",
-  },
-];
-
-const upcomingSeries = [
-  {
-    id: 4,
-    name: "ICC Champions Trophy 2025",
-    shortName: "ICC Champions Trophy",
-    type: "ODI",
-    teams: ["🌍 8 Teams"],
-    matches: "15 ODIs",
-    startDate: "Feb 19, 2025",
-    endDate: "Mar 9, 2025",
-    status: "upcoming",
-    matchesPlayed: "0/15",
-    venue: "Pakistan & UAE",
-  },
-  {
-    id: 5,
-    name: "West Indies vs Sri Lanka 2025",
-    shortName: "WI vs SL",
-    type: "T20I",
-    teams: ["🏏 West Indies", "🇱🇰 Sri Lanka"],
-    matches: "3 T20Is",
-    startDate: "Jan 10, 2025",
-    endDate: "Jan 16, 2025",
-    status: "upcoming",
-    matchesPlayed: "0/3",
-    venue: "West Indies",
-  },
-  {
-    id: 6,
-    name: "Bangladesh vs Zimbabwe 2025",
-    shortName: "BAN vs ZIM",
-    type: "ODI",
-    teams: ["🇧🇩 Bangladesh", "🇿🇼 Zimbabwe"],
-    matches: "3 ODIs",
-    startDate: "Jan 15, 2025",
-    endDate: "Jan 22, 2025",
-    status: "upcoming",
-    matchesPlayed: "0/3",
-    venue: "Bangladesh",
-  },
-];
-
-// Format type badge color
-function FormatBadge({ type }: { type: string }) {
-  const colors: { [key: string]: string } = {
-    "T20I": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-    "ODI": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    "Test": "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  };
-  return (
-    <span className={`text-xs px-2 py-0.5 rounded-full font-semibold border ${colors[type] || "bg-gray-500/20 text-gray-400"}`}>
-      {type}
-    </span>
-  );
+async function getSeries() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://cricscore-xi.vercel.app";
+    const res = await fetch(baseUrl + "/api/series", { cache: "no-store" });
+    const data = await res.json();
+    return data.data || [];
+  } catch {
+    return [];
+  }
 }
 
-// Series Card Component
-function SeriesCard({ series }: { series: any }) {
-  const isOngoing = series.status === "ongoing";
+function getSeriesType(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes("ipl")) return { label: "IPL", color: "#f85149" };
+  if (n.includes("bbl")) return { label: "BBL", color: "#58a6ff" };
+  if (n.includes("psl")) return { label: "PSL", color: "#3fb950" };
+  if (n.includes("cpl")) return { label: "CPL", color: "#d4a853" };
+  if (n.includes("sa20")) return { label: "SA20", color: "#f85149" };
+  if (n.includes("hundred")) return { label: "The Hundred", color: "#d4a853" };
+  if (n.includes("world cup")) return { label: "World Cup", color: "#d4a853" };
+  if (n.includes("champions trophy")) return { label: "Champions Trophy", color: "#d4a853" };
+  if (n.includes("asia cup")) return { label: "Asia Cup", color: "#58a6ff" };
+  if (n.includes("icc")) return { label: "ICC", color: "#d4a853" };
+  if (n.includes("test")) return { label: "Test", color: "#e6edf3" };
+  if (n.includes("t20")) return { label: "T20", color: "#3fb950" };
+  if (n.includes("odi")) return { label: "ODI", color: "#58a6ff" };
+  return { label: "Series", color: "#7d8590" };
+}
+
+function formatDate(dateStr: string) {
+  if (!dateStr) return null;
+  try {
+    return new Date(dateStr).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  } catch { return dateStr; }
+}
+
+function isUpcoming(startDate: string) {
+  if (!startDate) return false;
+  return new Date(startDate) > new Date();
+}
+
+function isOngoing(startDate: string, endDate: string) {
+  if (!startDate) return false;
+  const now = new Date();
+  return new Date(startDate) <= now && (!endDate || new Date(endDate) >= now);
+}
+
+function SeriesCard({ series, status }: { series: any, status: string }) {
+  const type = getSeriesType(series.name || "");
+  const start = formatDate(series.startDate);
+  const end = formatDate(series.endDate);
+  const borderColor = status === "ongoing" ? "rgba(248,81,73,0.35)" : status === "upcoming" ? "rgba(63,185,80,0.35)" : "#30363d";
+  const statusColor = status === "ongoing" ? "#f85149" : status === "upcoming" ? "#3fb950" : "#7d8590";
+  const statusLabel = status === "ongoing" ? "LIVE" : status === "upcoming" ? "UPCOMING" : "RECENT";
+
   return (
-    <div className="bg-[#1e1e2e] border border-[#2a2a3e] rounded-xl p-5 hover:border-orange-500 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10 cursor-pointer">
-      
-      {/* Card Top */}
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex-1 mr-3">
-          <h3 className="font-bold text-white text-sm mb-1">{series.name}</h3>
-          <p className="text-gray-500 text-xs">📍 {series.venue}</p>
+    <div style={{ backgroundColor: "#161b22", border: "1px solid " + borderColor, borderRadius: "14px", padding: "18px 20px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px", marginBottom: "10px" }}>
+        <div style={{ color: "#e6edf3", fontWeight: "600", fontSize: "14px", lineHeight: "1.5", flex: 1 }}>
+          {series.name}
         </div>
-        <div className="flex flex-col items-end gap-1">
-          <FormatBadge type={series.type} />
-          {isOngoing ? (
-            <span className="flex items-center gap-1 text-xs text-green-400 font-semibold">
-              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-              Ongoing
-            </span>
-          ) : (
-            <span className="text-xs text-gray-500 font-semibold">Upcoming</span>
-          )}
+        <div style={{ display: "flex", alignItems: "center", gap: "5px", flexShrink: 0 }}>
+          <div style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: statusColor }}></div>
+          <span style={{ fontSize: "10px", color: statusColor, fontWeight: "700" }}>{statusLabel}</span>
         </div>
       </div>
 
-      {/* Teams */}
-      <div className="flex items-center gap-2 mb-3">
-        {series.teams.map((team: string, i: number) => (
-          <span key={i} className="text-sm text-gray-300 font-medium">
-            {team}{i < series.teams.length - 1 && <span className="text-gray-600 mx-1">vs</span>}
+      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "12px" }}>
+        <span style={{ fontSize: "10px", fontWeight: "700", color: type.color, backgroundColor: type.color + "18", border: "1px solid " + type.color + "40", padding: "2px 8px", borderRadius: "100px" }}>
+          {type.label}
+        </span>
+        {series.matches && (
+          <span style={{ fontSize: "10px", color: "#7d8590", backgroundColor: "rgba(125,133,144,0.1)", border: "1px solid #30363d", padding: "2px 8px", borderRadius: "100px" }}>
+            {series.matches} matches
           </span>
-        ))}
+        )}
       </div>
 
-      {/* Card Footer */}
-      <div className="flex justify-between items-center pt-3 border-t border-[#2a2a3e]">
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-500">
-            📅 {series.startDate} — {series.endDate}
+      {(start || end) && (
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", paddingTop: "10px", borderTop: "1px solid #21262d" }}>
+          <span style={{ fontSize: "11px" }}>📅</span>
+          <span style={{ color: "#7d8590", fontSize: "11px" }}>
+            {start && end ? start + " — " + end : start || end}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">{series.matches}</span>
-          <span className="text-xs bg-[#0a0a0f] text-orange-400 px-2 py-0.5 rounded font-mono">
-            {series.matchesPlayed} matches
-          </span>
-        </div>
-      </div>
-
+      )}
     </div>
   );
 }
 
-export default function SeriesPage() {
+export default async function SeriesPage() {
+  const series = await getSeries();
+  const ongoing = series.filter((s: any) => isOngoing(s.startDate, s.endDate));
+  const upcoming = series.filter((s: any) => isUpcoming(s.startDate));
+  const recent = series.filter((s: any) => !isUpcoming(s.startDate) && !isOngoing(s.startDate, s.endDate)).slice(0, 10);
+
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
+    <div style={{ minHeight: "100vh", backgroundColor: "#0d1117", color: "#e6edf3" }}>
       <Navbar />
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 16px" }}>
 
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-1">
-            Cricket <span className="text-orange-500">Series</span>
+        <div style={{ marginBottom: "32px" }}>
+          <h1 style={{ fontSize: "28px", fontWeight: "700", color: "#e6edf3", marginBottom: "8px" }}>
+            Cricket <span style={{ color: "#3fb950" }}>Series</span>
           </h1>
-          <p className="text-gray-400 text-sm">
-            All ongoing and upcoming international cricket series
-          </p>
+          <p style={{ color: "#7d8590", fontSize: "13px" }}>Major international series, bilateral tours and top leagues</p>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="flex gap-2 mb-8">
-          {["All", "T20I", "ODI", "Test"].map((tab) => (
-            <button
-              key={tab}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                tab === "All"
-                  ? "bg-orange-500 text-white"
-                  : "bg-[#1e1e2e] text-gray-400 hover:text-white border border-[#2a2a3e]"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+        {ongoing.length > 0 && (
+          <section style={{ marginBottom: "40px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+              <h2 style={{ fontSize: "15px", fontWeight: "600", color: "#e6edf3" }}>Ongoing</h2>
+              <span style={{ fontSize: "11px", color: "#f85149", backgroundColor: "rgba(248,81,73,0.1)", border: "1px solid rgba(248,81,73,0.3)", padding: "2px 8px", borderRadius: "100px" }}>{ongoing.length}</span>
+              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(248,81,73,0.4), transparent)" }}></div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "12px" }}>
+              {ongoing.map((s: any) => <SeriesCard key={s.id} series={s} status="ongoing" />)}
+            </div>
+          </section>
+        )}
 
-        {/* Ongoing Series */}
-        <section className="mb-10">
-          <div className="flex items-center gap-3 mb-5">
-            <h2 className="text-lg font-bold text-white">Ongoing Series</h2>
-            <span className="flex items-center gap-1 text-xs text-green-400 font-semibold">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              {ongoingSeries.length} Active
-            </span>
-            <div className="flex-1 h-px bg-gradient-to-r from-orange-500/50 to-transparent"></div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ongoingSeries.map((series) => (
-              <SeriesCard key={series.id} series={series} />
-            ))}
-          </div>
-        </section>
+        {upcoming.length > 0 && (
+          <section style={{ marginBottom: "40px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+              <h2 style={{ fontSize: "15px", fontWeight: "600", color: "#e6edf3" }}>Upcoming</h2>
+              <span style={{ fontSize: "11px", color: "#3fb950", backgroundColor: "rgba(63,185,80,0.1)", border: "1px solid rgba(63,185,80,0.3)", padding: "2px 8px", borderRadius: "100px" }}>{upcoming.length}</span>
+              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(63,185,80,0.4), transparent)" }}></div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "12px" }}>
+              {upcoming.map((s: any) => <SeriesCard key={s.id} series={s} status="upcoming" />)}
+            </div>
+          </section>
+        )}
 
-        {/* Upcoming Series */}
-        <section>
-          <div className="flex items-center gap-3 mb-5">
-            <h2 className="text-lg font-bold text-white">Upcoming Series</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-gray-600/50 to-transparent"></div>
+        {recent.length > 0 && (
+          <section style={{ marginBottom: "40px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+              <h2 style={{ fontSize: "15px", fontWeight: "600", color: "#e6edf3" }}>Recent</h2>
+              <span style={{ fontSize: "11px", color: "#7d8590", backgroundColor: "rgba(125,133,144,0.1)", border: "1px solid rgba(125,133,144,0.2)", padding: "2px 8px", borderRadius: "100px" }}>{recent.length}</span>
+              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(125,133,144,0.4), transparent)" }}></div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "12px" }}>
+              {recent.map((s: any) => <SeriesCard key={s.id} series={s} status="recent" />)}
+            </div>
+          </section>
+        )}
+
+        {series.length === 0 && (
+          <div style={{ textAlign: "center", padding: "80px 0" }}>
+            <p style={{ fontSize: "48px", marginBottom: "16px" }}>📋</p>
+            <h2 style={{ fontSize: "20px", fontWeight: "600", marginBottom: "8px" }}>No series data</h2>
+            <p style={{ color: "#7d8590" }}>Check back soon!</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {upcomingSeries.map((series) => (
-              <SeriesCard key={series.id} series={series} />
-            ))}
-          </div>
-        </section>
+        )}
 
       </div>
     </div>
