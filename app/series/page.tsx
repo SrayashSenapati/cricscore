@@ -80,9 +80,8 @@ function SeriesCard({ series, status }: { series: any, status: string }) {
 
       {(start || end) && (
         <div style={{ display: "flex", alignItems: "center", gap: "6px", paddingTop: "10px", borderTop: "1px solid #21262d" }}>
-          <span style={{ fontSize: "11px" }}>📅</span>
-          <span style={{ color: "#7d8590", fontSize: "11px" }}>
-            {start && end ? start + " — " + end : start || end}
+        <span style={{ color: "#7d8590", fontSize: "11px" }}>
+            {start ? "Starts " + start : ""}
           </span>
         </div>
       )}
