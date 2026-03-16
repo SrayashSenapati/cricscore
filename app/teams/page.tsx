@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar";
 import Link from "next/link";
 
 const INTERNATIONAL_TEAMS = [
-  { id: "india", name: "India", flag: "🇮🇳", color: "#ff9900", bg: "rgba(255,153,0,0.1)", border: "rgba(255,153,0,0.3)", ranking: { test: 1, odi: 1, t20: 2 } },
+  { id: "india", name: "India", flag: "🇮🇳", color: "#ff9900", bg: "rgba(255,153,0,0.1)", border: "rgba(255,153,0,0.3)", ranking: { test: 1, odi: 1, t20: 1 } },
   { id: "australia", name: "Australia", flag: "🇦🇺", color: "#ffcd00", bg: "rgba(255,205,0,0.1)", border: "rgba(255,205,0,0.3)", ranking: { test: 2, odi: 3, t20: 4 } },
   { id: "england", name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", color: "#58a6ff", bg: "rgba(0,82,165,0.1)", border: "rgba(0,82,165,0.3)", ranking: { test: 3, odi: 4, t20: 5 } },
   { id: "pakistan", name: "Pakistan", flag: "🇵🇰", color: "#3fb950", bg: "rgba(1,119,54,0.1)", border: "rgba(1,119,54,0.3)", ranking: { test: 4, odi: 6, t20: 1 } },
@@ -19,7 +19,7 @@ const INTERNATIONAL_TEAMS = [
 const IPL_TEAMS = [
   { id: "mi", name: "Mumbai Indians", short: "MI", color: "#004494", bg: "rgba(0,68,148,0.1)", border: "rgba(0,68,148,0.3)", titles: 5 },
   { id: "csk", name: "Chennai Super Kings", short: "CSK", color: "#ffcd00", bg: "rgba(255,205,0,0.1)", border: "rgba(255,205,0,0.3)", titles: 5 },
-  { id: "rcb", name: "Royal Challengers Bengaluru", short: "RCB", color: "#f85149", bg: "rgba(165,0,0,0.1)", border: "rgba(165,0,0,0.3)", titles: 0 },
+  { id: "rcb", name: "Royal Challengers Bengaluru", short: "RCB", color: "#f85149", bg: "rgba(165,0,0,0.1)", border: "rgba(165,0,0,0.3)", titles: 1 },
   { id: "kkr", name: "Kolkata Knight Riders", short: "KKR", color: "#a371f7", bg: "rgba(58,17,107,0.1)", border: "rgba(58,17,107,0.3)", titles: 3 },
   { id: "srh", name: "Sunrisers Hyderabad", short: "SRH", color: "#ff6600", bg: "rgba(255,102,0,0.1)", border: "rgba(255,102,0,0.3)", titles: 1 },
   { id: "dc", name: "Delhi Capitals", short: "DC", color: "#58a6ff", bg: "rgba(0,82,165,0.1)", border: "rgba(0,82,165,0.3)", titles: 0 },
